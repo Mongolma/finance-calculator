@@ -20,19 +20,22 @@ var userInterferController = (function () {
   };
 })();
 // санхүүгийн модулар
+// private function
 var financeController = (function () {
   var Income = function (id, description, value) {
     this.id = id;
     this.description = description;
     this.value = value;
   };
+  // private function
   var Expense = function (id, description, value) {
     this.id = id;
     this.description = description;
     this.value = value;
   };
+  // private data
   var data = {
-    allItems: {
+    Items: {
       inc: [],
       exp: [],
     },
@@ -41,13 +44,32 @@ var financeController = (function () {
       exp: 0,
     },
   };
+  return {
+    addItem: function (type, description, value) {
+      var item, id;
+      if (data.items[type].length === 0) id = 1;
+      else {
+        id = data.items[type][data.items[type].length - 1].id + 1;
+      }
+      if (type === "inc") {
+        item = new Income(id, description, value);
+      } else {
+        item = new Expense(id, description, value);
+      }
+      data.items[type].push(item);
+    },
+    data: function () {
+      return data;
+    },
+  };
 })();
 // холбогч модулар
 var appController = (function (userInterferController, financeController) {
   var ctrladdItem = function () {
     // 1. оруулах өгөгдлийг дэлгэцнээс олж авна
-    console.log(userInterferController.getInput());
+    var input = userInterferController.getInput();
     // 2. олж авсан өгөгдлүүдээ санхүүгийн контроллорт дамжуулж тэндээ хадгална
+    financeController.addItem(input.type, input.description, input.value);
     // 3. олж авсан өгөгдлүүдээ вэб дээрээ тохирох газар нь тавина
     // 4. төсөв тооцоолно
     // 5. эцэсийн үлдэгдэл, тооцоог дэлгэцэнд гаргана
