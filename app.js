@@ -1,4 +1,4 @@
-// дэлгэцтэй ажилллах
+// дэлгэцтэй ажиллах модулар
 var userInterferController = (function () {
   var DOMstrings = {
     inputType: ".add__type",
@@ -14,26 +14,23 @@ var userInterferController = (function () {
         value: document.querySelector(DOMstrings.inputValue).value,
       };
     },
-    getDomstring: function () {
+    getDomstrings: function () {
       return DOMstrings;
     },
   };
 })();
-
 // санхүүгийн модулар
 var financeController = (function () {
-  var Income = function (id, value, description) {
+  var Income = function (id, description, value) {
     this.id = id;
-    this.value = value;
     this.description = description;
+    this.value = value;
   };
-
-  var Expense = function (id, value, description) {
+  var Expense = function (id, description, value) {
     this.id = id;
-    this.value = value;
     this.description = description;
+    this.value = value;
   };
-
   var data = {
     allItems: {
       inc: [],
@@ -45,35 +42,32 @@ var financeController = (function () {
     },
   };
 })();
-
-// холбогч хэсэг
-var appController = (function (uiController, fnController) {
-  var ctrlAddItem = function () {
-    //   1. Оруулах өгөгдлөө дэлгэцнээс авна.
+// холбогч модулар
+var appController = (function (userInterferController, financeController) {
+  var ctrladdItem = function () {
+    // 1. оруулах өгөгдлийг дэлгэцнээс олж авна
     console.log(userInterferController.getInput());
-    //   2. Олж авсан өгөгдлүүдээ санхүүгийн модуларт оруулж хадгална.
-    //  3. Олж авсан өгөгдлүүдээ вэб дээрээ тохирох хэсэгт нь гаргана.
-    // 4. Төслийг тооцоолно.
-    // 5. Эцэсийн үлдэгдэл, тооцоог дэлгэцэнд гаргана.
+    // 2. олж авсан өгөгдлүүдээ санхүүгийн контроллорт дамжуулж тэндээ хадгална
+    // 3. олж авсан өгөгдлүүдээ вэб дээрээ тохирох газар нь тавина
+    // 4. төсөв тооцоолно
+    // 5. эцэсийн үлдэгдэл, тооцоог дэлгэцэнд гаргана
   };
   var setupEventListener = function () {
-    var DOM = uiController.getDomstring();
-
+    var DOM = userInterferController.getDomstrings();
     document.querySelector(DOM.addBtn).addEventListener("click", function () {
-      ctrlAddItem();
+      ctrladdItem();
     });
     document.addEventListener("keypress", function (event) {
-      if (event.keyCode === 13 || event.which === 13) {
-        ctrlAddItem();
+      if (event.keyCode === 13) {
+        ctrladdItem();
       }
     });
   };
   return {
     init: function () {
-      console.log("app started...");
+      console.log("app started");
       setupEventListener();
     },
   };
 })(userInterferController, financeController);
-
 appController.init();
