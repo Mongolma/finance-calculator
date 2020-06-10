@@ -1,5 +1,5 @@
 // дэлгэцтэй ажиллах модулар
-var userInterferController = (function () {
+var uiController = (function () {
   var DOMstrings = {
     inputType: ".add__type",
     inputDescription: ".add__description",
@@ -16,6 +16,27 @@ var userInterferController = (function () {
     },
     getDomstrings: function () {
       return DOMstrings;
+    },
+    addListItem: function (type, item) {
+      // орлого зарлагын элементийг агуулсан html-ийг бэлтгэнэ
+      var html;
+      if (type === "inc") {
+        list = ".income__list";
+        html =
+          '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+      } else {
+        list = ".expense__list";
+        html =
+          '<div class="item clearfix" id="expense-%id%"><div class="item__description">description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+      }
+
+      // тэр html дотроо орлого зарлагын утгуудыг replace ашиглаж өөрчилж өгнө
+      html = html.replace("%id%", item.id);
+      html = html.replace("%description%", item.description);
+      html = html.replace("%value%", item.value);
+
+      // бэлтгэсэн html ээ dom руу хийж өгнө
+      document.querySelector(list).insertAdjacentHTML("beforeend");
     },
   };
 })();
@@ -35,7 +56,7 @@ var financeController = (function () {
   };
   // private data
   var data = {
-    Items: {
+    items: {
       inc: [],
       exp: [],
     },
@@ -57,25 +78,23 @@ var financeController = (function () {
         item = new Expense(id, description, value);
       }
       data.items[type].push(item);
+      console.log(data.items);
+      return item;
     },
-    data: function () {
+    seeData: function () {
       return data;
     },
   };
 })();
 // холбогч модулар
-var appController = (function (userInterferController, financeController) {
+var appController = (function (uiController, financeController) {
   var ctrladdItem = function () {
-    // 1. оруулах өгөгдлийг дэлгэцнээс олж авна
-    var input = userInterferController.getInput();
-    // 2. олж авсан өгөгдлүүдээ санхүүгийн контроллорт дамжуулж тэндээ хадгална
+    var input = uiController.getInput();
     financeController.addItem(input.type, input.description, input.value);
-    // 3. олж авсан өгөгдлүүдээ вэб дээрээ тохирох газар нь тавина
-    // 4. төсөв тооцоолно
-    // 5. эцэсийн үлдэгдэл, тооцоог дэлгэцэнд гаргана
   };
+  uiController.addListItem(items, input.type);
   var setupEventListener = function () {
-    var DOM = userInterferController.getDomstrings();
+    var DOM = uiController.getDomstrings();
     document.querySelector(DOM.addBtn).addEventListener("click", function () {
       ctrladdItem();
     });
@@ -91,5 +110,6 @@ var appController = (function (userInterferController, financeController) {
       setupEventListener();
     },
   };
-})(userInterferController, financeController);
+})(uiController, financeController);
+
 appController.init();
